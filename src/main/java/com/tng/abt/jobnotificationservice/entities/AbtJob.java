@@ -21,11 +21,11 @@ public class AbtJob extends MasterEntity {
     private Date jobQueryDatetime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "abt_job_start_datetime")
+    @Column(name = "job_start_datetime")
     private Date abtJobStartDatetime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "abt_job_end_datetime")
+    @Column(name = "job_end_datetime")
     private Date abtJobEndDatetime;
 
     @Column(name = "is_successful_run")
@@ -34,8 +34,5 @@ public class AbtJob extends MasterEntity {
     @Enumerated
     @Column(name = "job_status")
     private JobStatus jobStatus;
-
-
-
 
 }

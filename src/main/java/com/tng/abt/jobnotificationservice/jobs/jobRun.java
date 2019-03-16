@@ -22,8 +22,6 @@ public class jobRun {
         String content = "";
         String[] atMobiles = new String[0];
 
-
-
         robotSendServices.sendTestMessage(webhook, content, atMobiles);
 
         String title = "Test ";
