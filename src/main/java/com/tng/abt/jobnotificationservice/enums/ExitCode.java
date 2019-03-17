@@ -1,13 +1,17 @@
 package com.tng.abt.jobnotificationservice.enums;
 
-public enum JobStatus {
+public enum ExitCode {
 
     /**
      *
      */
-    SUCCESS,
+    COMPLETED,
     /**
      *
      */
-    ERROR
+    FAILED,
+    /**
+     *
+     */
+    UNKNOWN
 }

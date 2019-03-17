@@ -1,10 +1,8 @@
 package com.tng.abt.jobnotificationservice.entities;
 
-import com.tng.abt.jobnotificationservice.enums.JobStatus;
 import com.touchngo.abt.utils.entities.MasterEntity;
 import lombok.Data;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -31,8 +29,10 @@ public class AbtJob extends MasterEntity {
     @Column(name = "is_successful_run")
     private Boolean isSuccessfulRun;
 
-    @Enumerated
-    @Column(name = "job_status")
-    private JobStatus jobStatus;
+    @Column(name = "exit_code")
+    private String exitCode;
+
+    @Column(name = "error_message", columnDefinition = "TEXT")
+    private String errorMessage;
 
 }

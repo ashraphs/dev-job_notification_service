@@ -2,6 +2,7 @@ package com.tng.abt.jobnotificationservice.configurations;
 
 import com.tng.abt.jobnotificationservice.repositories.impl.MasterEntityRepositoryImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -33,8 +34,8 @@ public class AppConfig {
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String hbm2ddl;
 
-    @Primary
     @Bean
+    @Primary
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSourceProperties dataSourceProperties() {
         return new DataSourceProperties();
@@ -76,15 +77,15 @@ public class AppConfig {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
-    @Bean("abtJdbcTemplate")
-    public JdbcTemplate abtJdbcTemplate() {
-        return new JdbcTemplate(abtDataSource());
-    }
-
     @Bean("abtBatchDataSource")
     @ConfigurationProperties(prefix = "abt-batch.datasource")
     public DataSource abtBatchDataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean("abtJdbcTemplate")
+    public JdbcTemplate abtJdbcTemplate(@Qualifier("abtDataSource") DataSource abtDatasource) {
+        return new JdbcTemplate(abtDatasource);
     }
 
     @Bean("abtBatchJdbcTemplate")
