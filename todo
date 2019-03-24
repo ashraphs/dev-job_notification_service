@@ -1,7 +1,7 @@
 [x] 1. create initial loader - run only for the first time
-        - [] query the job (example: card update job) *limit 1 result
-        - [] insert the result to table= jn_abt_job
-        - [] same to other job
+        - [x] query the job (example: card update job) *limit 1 result
+        - [x] insert the result to table= jn_abt_job
+        - [x] same to other job
 
  [] 2. Query the job based on job name
         - [] scheduling job = every 3 hour

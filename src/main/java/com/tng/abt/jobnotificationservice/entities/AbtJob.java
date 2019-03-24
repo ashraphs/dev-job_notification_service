@@ -29,6 +29,9 @@ public class AbtJob extends MasterEntity {
     @Column(name = "is_successful_run")
     private Boolean isSuccessfulRun;
 
+    @Column(name = "has_job_enabled")
+    private Boolean isJobEnabled;
+
     @Column(name = "exit_code")
     private String exitCode;
 
