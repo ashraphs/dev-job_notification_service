@@ -31,40 +31,45 @@ public class Run {
     private String token;
 
     @Scheduled(cron = "0 50 18 * * *")
-    private void jobRun(){
+    private void jobRun() {
+
         run();
     }
 
-    private void run(){
+    private void run() {
+        Boolean isEnable;
 
-        if (isAdvanceSettlementJobEnable())
-            isAdvanceSettlementJobEnable();
+        isEnable = jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.ADVANCE_SETTLEMENT.name());
+        if (isAdvanceSettlementJobEnable(isEnable))
+            return;
 
-        if (isCardUpdateJobEnable())
-            isCardUpdateJobEnable();
+        isEnable = jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.CARD_UPDATE_STATUS.name());
+        if (isCardUpdateJobEnable(isEnable))
+            return;
 
-        if (isDormantExclusionJobEnable())
-            isDormantExclusionJobEnable();
+        isEnable = jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.DORMANT_EXCLUSION.name());
+        if (isDormantExclusionJobEnable(isEnable))
+            return;
 
-        if (isGpBatchhJobEnable())
-            isGpBatchhJobEnable();
+        isEnable = jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.GP_BATCH.name());
+        if (isGpBatchhJobEnable(isEnable))
+            return;
 
-        if (isReportJobEnable())
-            isReportJobEnable();
+        isEnable = jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.REPORT_JOB.name());
+        if (isReportJobEnable(isEnable))
+            return;
+
     }
 
-    private Boolean isAdvanceSettlementJobEnable(){
-    Boolean isEnable =  jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.ADVANCE_SETTLEMENT.name());
+    private Boolean isAdvanceSettlementJobEnable(Boolean isEnable) {
+        jobProcess = JobProcessInterface.jobProcess();
+        jobProcess.setEnabled(isEnable);
+        jobProcess.getAdvanceSettlementLatestJob();
 
-    jobProcess = JobProcessInterface.jobProcess();
-    jobProcess.setEnabled(isEnable);
-    jobProcess.getAdvanceSettlementLatestJob();
-
-    return isEnable;
+        return isEnable;
     }
 
-    private Boolean isCardUpdateJobEnable(){
-        Boolean isEnable =  jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.CARD_UPDATE_STATUS.name());
+    private Boolean isCardUpdateJobEnable(Boolean isEnable) {
 
         jobProcess = JobProcessInterface.jobProcess();
         jobProcess.setEnabled(isEnable);
@@ -73,8 +78,7 @@ public class Run {
         return isEnable;
     }
 
-    private Boolean isDormantExclusionJobEnable(){
-        Boolean isEnable =  jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.DORMANT_EXCLUSION.name());
+    private Boolean isDormantExclusionJobEnable(Boolean isEnable) {
 
         jobProcess = JobProcessInterface.jobProcess();
         jobProcess.setEnabled(isEnable);
@@ -83,8 +87,7 @@ public class Run {
         return isEnable;
     }
 
-    private Boolean isGpBatchhJobEnable(){
-        Boolean isEnable =  jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.GP_BATCH.name());
+    private Boolean isGpBatchhJobEnable(Boolean isEnable) {
 
         jobProcess = JobProcessInterface.jobProcess();
         jobProcess.setEnabled(isEnable);
@@ -93,8 +96,7 @@ public class Run {
         return isEnable;
     }
 
-    private Boolean isReportJobEnable(){
-        Boolean isEnable =  jobConfigurationRepository.findByIsEnableAndDeletedIsFalse(JobName.REPORT_JOB.name());
+    private Boolean isReportJobEnable(Boolean isEnable) {
 
         jobProcess = JobProcessInterface.jobProcess();
         jobProcess.setEnabled(isEnable);

@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = JobNotificationServiceApplication.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableAutoConfiguration
-public class JobNotificationApplicationTests {
+public class JobControllerNotificationApplicationTests {
 
 
 }
