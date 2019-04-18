@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "jn_notification_message")
+@Table(name = "jbn_notification_messages")
 public class NotificationMessage extends MasterEntity {
 
     @Column(name = "name")

@@ -4,6 +4,6 @@ import com.tng.abt.jobnotificationservice.entities.JobConfiguration;
 
 public interface JobConfigurationRepository extends MasterEntityRepository<JobConfiguration> {
 
-    Boolean findByIsEnableAndDeletedIsFalse(String jobName);
+    JobConfiguration findByIsEnableTrueAndJobName(String jobName);
 
 }

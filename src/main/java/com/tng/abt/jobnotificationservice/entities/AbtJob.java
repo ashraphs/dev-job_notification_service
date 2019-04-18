@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "jn_abt_job")
+@Table(name = "jbn_jobs")
 public class AbtJob extends MasterEntity {
 
     @Column(name = "job_name")
