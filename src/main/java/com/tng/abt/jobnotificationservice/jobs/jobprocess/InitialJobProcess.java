@@ -48,6 +48,7 @@ public class InitialJobProcess {
      */
     @PostConstruct
     public HashMap<String, Date> epoch() {
+
         Map<String, Date> map = new HashMap<>();
         map.put(JobName.DORMANT_EXCLUSION.name(), getDormantJobTimestamp());
         map.put(JobName.CARD_UPDATE_STATUS.name(), getCardUpdateJobTimestamp());
