@@ -1,9 +1,9 @@
 package com.tng.abt.jobnotificationservice.repositories;
 
-import com.tng.abt.jobnotificationservice.entities.AbtJob;
+import com.tng.abt.jobnotificationservice.entities.EpochJob;
 
-public interface AbtJobRepository extends MasterEntityRepository<AbtJob> {
+public interface AbtJobRepository extends MasterEntityRepository<EpochJob> {
 
-    AbtJob findAllByJobName(String name);
+    EpochJob findAllByJobName(String name);
 
 }

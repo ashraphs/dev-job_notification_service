@@ -79,15 +79,4 @@ public class InitialJobProcess {
         return abtBatchJdbcTemplate.queryForObject(reportQuery, new Object[]{}, Date.class);
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class InitialJob {
-
-        private JobName jobName;
-        private String jobStartTime;
-
-
-    }
-
 }

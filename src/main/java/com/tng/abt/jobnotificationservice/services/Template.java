@@ -1,13 +1,11 @@
 package com.tng.abt.jobnotificationservice.services;
 
-import com.tng.abt.jobnotificationservice.entities.AbtJob;
+import com.tng.abt.jobnotificationservice.entities.EpochJob;
 import com.tng.abt.jobnotificationservice.enums.JobName;
 import com.tng.abt.jobnotificationservice.repositories.AbtJobRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 @Slf4j
 @Service
@@ -16,24 +14,16 @@ public class Template {
     @Autowired
     private AbtJobRepository abtJobRepository;
 
-    @PostConstruct
-    public void testTemplate() {
-        log.info(">>>>>>>>> Message Template <<<<<<<\n");
-        log.info("{}", reportTemplate());
-
-    }
-
-    private String reportTemplate() {
+    private String template() {
         String firstHeader = "<----- Job Monitoring ------>\n";
 
         return firstHeader + dormantJobBody() + cardUpdateJobBody() + advanceSettlementJobBody() + gpBatchJobBody() + reportJobBody();
     }
 
-
     private String dormantJobBody() {
-        AbtJob dormant = abtJobRepository.findAllByJobName(JobName.DORMANT_EXCLUSION.name());
+        EpochJob dormant = abtJobRepository.findAllByJobName(JobName.DORMANT_EXCLUSION.name());
         if (dormant != null) {
-            String name = "###### " + dormant.getJobName() + " ######";
+            String name = "###### " + dormant.getJobName() + " ######\n";
 
             String startDate = "Job Start: " + dormant.getAbtJobStartDatetime() + "\n";
             String endDate = "Job End: " + dormant.getAbtJobStartDatetime() + "\n";
@@ -44,7 +34,7 @@ public class Template {
     }
 
     private String cardUpdateJobBody() {
-        AbtJob cardUpdate = abtJobRepository.findAllByJobName(JobName.CARD_UPDATE_STATUS.name());
+        EpochJob cardUpdate = abtJobRepository.findAllByJobName(JobName.CARD_UPDATE_STATUS.name());
         if (cardUpdate != null) {
             String name = "###### " + cardUpdate.getJobName() + " ######\n";
 
@@ -57,7 +47,7 @@ public class Template {
     }
 
     private String advanceSettlementJobBody() {
-        AbtJob advanceSettlement = abtJobRepository.findAllByJobName(JobName.ADVANCE_SETTLEMENT.name());
+        EpochJob advanceSettlement = abtJobRepository.findAllByJobName(JobName.ADVANCE_SETTLEMENT.name());
         if (advanceSettlement != null) {
             String name = "###### " + advanceSettlement.getJobName() + " ######\n";
 
@@ -70,7 +60,7 @@ public class Template {
     }
 
     private String gpBatchJobBody() {
-        AbtJob gpBatchJob = abtJobRepository.findAllByJobName(JobName.GP_BATCH.name());
+        EpochJob gpBatchJob = abtJobRepository.findAllByJobName(JobName.GP_BATCH.name());
         if (gpBatchJob != null) {
             String name = "###### " + gpBatchJob.getJobName() + " ######\n";
 
@@ -83,7 +73,7 @@ public class Template {
     }
 
     private String reportJobBody() {
-        AbtJob report = abtJobRepository.findAllByJobName(JobName.REPORT_JOB.name());
+        EpochJob report = abtJobRepository.findAllByJobName(JobName.REPORT_JOB.name());
         if (report != null) {
             String name = "###### " + report.getJobName() + " ######\n";
 

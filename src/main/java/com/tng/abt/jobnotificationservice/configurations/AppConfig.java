@@ -93,4 +93,8 @@ public class AppConfig {
         return new JdbcTemplate(abtBatchDataSource());
     }
 
+    @Bean("localJdbcTemplate")
+    public JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(dataSource(dataSourceProperties()));
+    }
 }

@@ -1,6 +1,6 @@
 package com.tng.abt.jobnotificationservice.jobs.jobprocess;
 
-import com.tng.abt.jobnotificationservice.entities.AbtJob;
+import com.tng.abt.jobnotificationservice.entities.EpochJob;
 import com.tng.abt.jobnotificationservice.enums.JobName;
 import com.tng.abt.jobnotificationservice.repositories.AbtJobRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,14 @@ public class LatestJobProcess {
     @Autowired
     private JdbcTemplate abtJdbcTemplate;
 
+    @Qualifier("abtBatchJdbcTemplate")
+    @Autowired
+    private JdbcTemplate abtBatchJdbcTemplate;
+
+    @Qualifier("localJdbcTemplate")
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Autowired
     private InitialJobProcess initialJobProcess;
 
@@ -45,61 +53,65 @@ public class LatestJobProcess {
     @Value("${report.latest.job.query}")
     private String reportJobQuery;
 
+    @Value("${truncate.job.query}")
+    private String truncateJobQuery;
+
 
     @PostConstruct
     private void findLatestJobAndSave() {
-        List<AbtJob> abtJobs = new ArrayList<>();
-
+        List<EpochJob> abtJobs = new ArrayList<>();
         abtJobs.addAll(getLatestDormantJob());
         abtJobs.addAll(getLatestCardUpdateJob());
         abtJobs.addAll(getAdvanceSettlementJob());
         abtJobs.addAll(getGpBatchJob());
         abtJobs.addAll(getReportJob());
 
+        //truncate the table
+        if (abtJobs.size() > 0) {
+            jdbcTemplate.execute(truncateJobQuery);
+        }
 
-        for (AbtJob job : abtJobs) {
+        for (EpochJob job : abtJobs) {
             job = abtJobRepository.save(job);
         }
 
     }
 
-    private List<AbtJob> getLatestDormantJob() {
+    private List<EpochJob> getLatestDormantJob() {
         HashMap<String, Date> job = initialJobProcess.epoch();
         String key = String.valueOf(job.get(JobName.DORMANT_EXCLUSION.name()));
         String query = dormantLatestJobQuery.replace("@", key);
 
         return new ArrayList<>(
-                abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
+                abtJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.DORMANT_EXCLUSION.name())
                         .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
                         .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
-                        .isSuccessfulRun(result.getBoolean("is_successful_run"))
                         .build())
         );
     }
 
-    private List<AbtJob> getLatestCardUpdateJob() {
+    private List<EpochJob> getLatestCardUpdateJob() {
         HashMap<String, Date> job = initialJobProcess.epoch();
         String key = String.valueOf(job.get(JobName.CARD_UPDATE_STATUS.name()));
         String query = cardUpdateLatestJobQuery.replace("@", key);
 
         return new ArrayList<>(
-                abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
+                abtJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.CARD_UPDATE_STATUS.name())
                         .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
                         .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
-                        .isSuccessfulRun(result.getBoolean("is_successful_run"))
                         .build())
         );
     }
 
-    private List<AbtJob> getAdvanceSettlementJob() {
+    private List<EpochJob> getAdvanceSettlementJob() {
         HashMap<String, Date> job = initialJobProcess.epoch();
         String key = String.valueOf(job.get(JobName.ADVANCE_SETTLEMENT.name()));
         String query = advanceSettlementJobQuery.replace("@", key);
 
         return new ArrayList<>(
-                abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
+                abtJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.ADVANCE_SETTLEMENT.name())
                         .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
                         .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
@@ -107,32 +119,30 @@ public class LatestJobProcess {
         );
     }
 
-    private List<AbtJob> getGpBatchJob() {
+    private List<EpochJob> getGpBatchJob() {
         HashMap<String, Date> job = initialJobProcess.epoch();
         String key = String.valueOf(job.get(JobName.GP_BATCH.name()));
         String query = gpBatchJobQuery.replace("@", key);
 
         return new ArrayList<>(
-                abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
+                abtBatchJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.GP_BATCH.name())
                         .abtJobStartDatetime(result.getTimestamp("START_TIME"))
                         .abtJobEndDatetime(result.getTimestamp("END_TIME"))
-                        .exitCode(result.getString("EXIT_CODE"))
                         .build())
         );
     }
 
-    private List<AbtJob> getReportJob() {
+    private List<EpochJob> getReportJob() {
         HashMap<String, Date> job = initialJobProcess.epoch();
         String key = String.valueOf(job.get(JobName.REPORT_JOB.name()));
         String query = reportJobQuery.replace("@", key);
 
         return new ArrayList<>(
-                abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
+                abtBatchJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.REPORT_JOB.name())
                         .abtJobStartDatetime(result.getTimestamp("START_TIME"))
                         .abtJobEndDatetime(result.getTimestamp("END_TIME"))
-                        .exitCode(result.getString("EXIT_CODE"))
                         .build())
         );
     }
