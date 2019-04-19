@@ -1,7 +1,9 @@
 package com.tng.abt.jobnotificationservice.jobs.jobprocess;
 
 import com.tng.abt.jobnotificationservice.enums.JobName;
-import com.tng.abt.jobnotificationservice.pojos.InitialJobPojo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +11,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class InitialJobProcess {
@@ -43,15 +47,15 @@ public class InitialJobProcess {
      * @return as set of key,value
      */
     @PostConstruct
-    public List<InitialJobPojo> init() {
-        Map<String, Date> map = new HashMap<String, Date>();
+    public HashMap<String, Date> epoch() {
+        Map<String, Date> map = new HashMap<>();
         map.put(JobName.DORMANT_EXCLUSION.name(), getDormantJobTimestamp());
         map.put(JobName.CARD_UPDATE_STATUS.name(), getCardUpdateJobTimestamp());
         map.put(JobName.ADVANCE_SETTLEMENT.name(), getAdvanceSettlementJobTimestamp());
         map.put(JobName.GP_BATCH.name(), getGpBatchJobTimestamp());
         map.put(JobName.REPORT_JOB.name(), getReportJobTimestamp());
 
-        return new ArrayList(map.entrySet());
+        return new HashMap<>(map);
     }
 
     private Date getDormantJobTimestamp() {
@@ -72,6 +76,17 @@ public class InitialJobProcess {
 
     private Date getReportJobTimestamp() {
         return abtBatchJdbcTemplate.queryForObject(reportQuery, new Object[]{}, Date.class);
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class InitialJob {
+
+        private JobName jobName;
+        private String jobStartTime;
+
+
     }
 
 }
