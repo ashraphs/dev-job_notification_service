@@ -49,11 +49,13 @@ public class LatestJobProcess {
     @PostConstruct
     private void findLatestJobAndSave() {
         List<AbtJob> abtJobs = new ArrayList<>();
+
         abtJobs.addAll(getLatestDormantJob());
         abtJobs.addAll(getLatestCardUpdateJob());
         abtJobs.addAll(getAdvanceSettlementJob());
         abtJobs.addAll(getGpBatchJob());
         abtJobs.addAll(getReportJob());
+
 
         for (AbtJob job : abtJobs) {
             job = abtJobRepository.save(job);
@@ -66,7 +68,7 @@ public class LatestJobProcess {
         String key = String.valueOf(job.get(JobName.DORMANT_EXCLUSION.name()));
         String query = dormantLatestJobQuery.replace("@", key);
 
-        List<AbtJob> dormant = new ArrayList<>(
+        return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
                         .jobName(JobName.DORMANT_EXCLUSION.name())
                         .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
@@ -74,7 +76,6 @@ public class LatestJobProcess {
                         .isSuccessfulRun(result.getBoolean("is_successful_run"))
                         .build())
         );
-        return dormant;
     }
 
     private List<AbtJob> getLatestCardUpdateJob() {
@@ -82,7 +83,7 @@ public class LatestJobProcess {
         String key = String.valueOf(job.get(JobName.CARD_UPDATE_STATUS.name()));
         String query = cardUpdateLatestJobQuery.replace("@", key);
 
-        List<AbtJob> card = new ArrayList<>(
+        return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
                         .jobName(JobName.CARD_UPDATE_STATUS.name())
                         .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
@@ -90,7 +91,6 @@ public class LatestJobProcess {
                         .isSuccessfulRun(result.getBoolean("is_successful_run"))
                         .build())
         );
-        return card;
     }
 
     private List<AbtJob> getAdvanceSettlementJob() {
@@ -98,14 +98,13 @@ public class LatestJobProcess {
         String key = String.valueOf(job.get(JobName.ADVANCE_SETTLEMENT.name()));
         String query = advanceSettlementJobQuery.replace("@", key);
 
-        List<AbtJob> settlement = new ArrayList<>(
+        return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
                         .jobName(JobName.ADVANCE_SETTLEMENT.name())
                         .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
                         .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
                         .build())
         );
-        return settlement;
     }
 
     private List<AbtJob> getGpBatchJob() {
@@ -113,7 +112,7 @@ public class LatestJobProcess {
         String key = String.valueOf(job.get(JobName.GP_BATCH.name()));
         String query = gpBatchJobQuery.replace("@", key);
 
-        List<AbtJob> gpBatch = new ArrayList<>(
+        return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
                         .jobName(JobName.GP_BATCH.name())
                         .abtJobStartDatetime(result.getTimestamp("START_TIME"))
@@ -121,7 +120,6 @@ public class LatestJobProcess {
                         .exitCode(result.getString("EXIT_CODE"))
                         .build())
         );
-        return gpBatch;
     }
 
     private List<AbtJob> getReportJob() {
@@ -129,7 +127,7 @@ public class LatestJobProcess {
         String key = String.valueOf(job.get(JobName.REPORT_JOB.name()));
         String query = reportJobQuery.replace("@", key);
 
-        List<AbtJob> report = new ArrayList<>(
+        return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> AbtJob.builder()
                         .jobName(JobName.REPORT_JOB.name())
                         .abtJobStartDatetime(result.getTimestamp("START_TIME"))
@@ -137,7 +135,6 @@ public class LatestJobProcess {
                         .exitCode(result.getString("EXIT_CODE"))
                         .build())
         );
-        return report;
     }
 
 }
