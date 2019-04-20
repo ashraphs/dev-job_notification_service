@@ -46,7 +46,7 @@ public class InitialJobProcess {
      *
      * @return as set of key,value
      */
-    @PostConstruct
+//    @PostConstruct
     public HashMap<String, Date> epoch() {
 
         Map<String, Date> map = new HashMap<>();

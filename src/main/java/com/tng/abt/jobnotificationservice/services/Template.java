@@ -1,8 +1,9 @@
 package com.tng.abt.jobnotificationservice.services;
 
-import com.tng.abt.jobnotificationservice.entities.EpochJob;
+import com.tng.abt.jobnotificationservice.entities.JobsMonitor;
 import com.tng.abt.jobnotificationservice.enums.JobName;
-import com.tng.abt.jobnotificationservice.repositories.AbtJobRepository;
+import com.tng.abt.jobnotificationservice.enums.NotificationStatus;
+import com.tng.abt.jobnotificationservice.repositories.JobsMonitorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,73 +13,73 @@ import org.springframework.stereotype.Service;
 public class Template {
 
     @Autowired
-    private AbtJobRepository abtJobRepository;
+    private JobsMonitorRepository abtJobRepository;
 
-    private String template() {
+    public String body(NotificationStatus status) {
         String firstHeader = "<----- Job Monitoring ------>\n";
 
-        return firstHeader + dormantJobBody() + cardUpdateJobBody() + advanceSettlementJobBody() + gpBatchJobBody() + reportJobBody();
+        return firstHeader + dormantJobBody(status) + cardUpdateJobBody(status) + advanceSettlementJobBody(status) + gpBatchJobBody(status) + reportJobBody(status);
     }
 
-    private String dormantJobBody() {
-        EpochJob dormant = abtJobRepository.findAllByJobName(JobName.DORMANT_EXCLUSION.name());
+    private String dormantJobBody(NotificationStatus status) {
+        JobsMonitor dormant = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.DORMANT_EXCLUSION.name());
         if (dormant != null) {
-            String name = "###### " + dormant.getJobName() + " ######\n";
+            String name = "---- " + dormant.getJobName() + " ----\n";
 
-            String startDate = "Job Start: " + dormant.getAbtJobStartDatetime() + "\n";
-            String endDate = "Job End: " + dormant.getAbtJobStartDatetime() + "\n";
+            String startDate = "Job Start: " + dormant.getJobStartDate() + "\n";
+            String endDate = "Job End: " + dormant.getJobEndDate() + "\n";
 
             return name + startDate + endDate;
         } else
             return null;
     }
 
-    private String cardUpdateJobBody() {
-        EpochJob cardUpdate = abtJobRepository.findAllByJobName(JobName.CARD_UPDATE_STATUS.name());
+    private String cardUpdateJobBody(NotificationStatus status) {
+        JobsMonitor cardUpdate = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.CARD_UPDATE_STATUS.name());
         if (cardUpdate != null) {
-            String name = "###### " + cardUpdate.getJobName() + " ######\n";
+            String name = "---- " + cardUpdate.getJobName() + " ----\n";
 
-            String startDate = "Job Start: " + cardUpdate.getAbtJobStartDatetime() + "\n";
-            String endDate = "Job End: " + cardUpdate.getAbtJobStartDatetime() + "\n";
+            String startDate = "Job Start: " + cardUpdate.getJobStartDate() + "\n";
+            String endDate = "Job End: " + cardUpdate.getJobEndDate() + "\n";
 
             return name + startDate + endDate;
         } else
             return null;
     }
 
-    private String advanceSettlementJobBody() {
-        EpochJob advanceSettlement = abtJobRepository.findAllByJobName(JobName.ADVANCE_SETTLEMENT.name());
+    private String advanceSettlementJobBody(NotificationStatus status) {
+        JobsMonitor advanceSettlement = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.ADVANCE_SETTLEMENT.name());
         if (advanceSettlement != null) {
-            String name = "###### " + advanceSettlement.getJobName() + " ######\n";
+            String name = "---- " + advanceSettlement.getJobName() + " ----\n";
 
-            String startDate = "Job Start: " + advanceSettlement.getAbtJobStartDatetime() + "\n";
-            String endDate = "Job End: " + advanceSettlement.getAbtJobStartDatetime() + "\n";
+            String startDate = "Job Start: " + advanceSettlement.getJobStartDate() + "\n";
+            String endDate = "Job End: " + advanceSettlement.getJobEndDate() + "\n";
 
             return name + startDate + endDate;
         } else
             return null;
     }
 
-    private String gpBatchJobBody() {
-        EpochJob gpBatchJob = abtJobRepository.findAllByJobName(JobName.GP_BATCH.name());
+    private String gpBatchJobBody(NotificationStatus status) {
+        JobsMonitor gpBatchJob = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.GP_BATCH.name());
         if (gpBatchJob != null) {
-            String name = "###### " + gpBatchJob.getJobName() + " ######\n";
+            String name = "---- " + gpBatchJob.getJobName() + " ----\n";
 
-            String startDate = "Job Start: " + gpBatchJob.getAbtJobStartDatetime() + "\n";
-            String endDate = "Job End: " + gpBatchJob.getAbtJobStartDatetime() + "\n";
+            String startDate = "Job Start: " + gpBatchJob.getJobStartDate();
+            String endDate = "Job End: " + gpBatchJob.getJobEndDate() + "\n";
 
             return name + startDate + endDate;
         } else
             return null;
     }
 
-    private String reportJobBody() {
-        EpochJob report = abtJobRepository.findAllByJobName(JobName.REPORT_JOB.name());
+    private String reportJobBody(NotificationStatus status) {
+        JobsMonitor report = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.REPORT_JOB.name());
         if (report != null) {
-            String name = "###### " + report.getJobName() + " ######\n";
+            String name = "---- " + report.getJobName() + " ----\n";
 
-            String startDate = "Job Start: " + report.getAbtJobStartDatetime() + "\n";
-            String endDate = "Job End: " + report.getAbtJobStartDatetime();
+            String startDate = "Job Start: " + report.getJobStartDate() + "\n";
+            String endDate = "Job End: " + report.getJobEndDate();
 
             return name + startDate + endDate;
         } else
