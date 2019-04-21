@@ -1,18 +1,14 @@
 package com.tng.abt.jobnotificationservice.entities;
 
 import com.touchngo.abt.utils.entities.MasterEntity;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
+@Builder
 @Entity
 @Table(name = "tmp_latest_job")
 public class EpochJob extends MasterEntity {
