@@ -16,18 +16,19 @@ public class Template {
     private JobsMonitorRepository abtJobRepository;
 
     public String body(NotificationStatus status) {
-        String firstHeader = "<----- Job Monitoring ------>\n";
+        String firstHeader = "|--JOB MONITORING\n\n";
 
         return firstHeader + dormantJobBody(status) + cardUpdateJobBody(status) + advanceSettlementJobBody(status) + gpBatchJobBody(status) + reportJobBody(status);
     }
 
     private String dormantJobBody(NotificationStatus status) {
-        JobsMonitor dormant = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.DORMANT_EXCLUSION.name());
-        if (dormant != null) {
-            String name = "---- " + dormant.getJobName() + " ----\n";
+        JobsMonitor dormant = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.DORMANT_EXCLUSION.name(), status);
+
+        if (dormant != null && dormant.getNotificationStatus().equals(NotificationStatus.NEW)) {
+            String name = "|-- " + dormant.getJobName() + "\n";
 
             String startDate = "Job Start: " + dormant.getJobStartDate() + "\n";
-            String endDate = "Job End: " + dormant.getJobEndDate() + "\n";
+            String endDate = "Job End: " + dormant.getJobEndDate() + "\n\n";
 
             return name + startDate + endDate;
         } else
@@ -35,12 +36,12 @@ public class Template {
     }
 
     private String cardUpdateJobBody(NotificationStatus status) {
-        JobsMonitor cardUpdate = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.CARD_UPDATE_STATUS.name());
-        if (cardUpdate != null) {
-            String name = "---- " + cardUpdate.getJobName() + " ----\n";
+        JobsMonitor cardUpdate = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.CARD_UPDATE_STATUS.name(), status);
+        if (cardUpdate != null && cardUpdate.getNotificationStatus().equals(NotificationStatus.NEW)) {
+            String name = "|-- " + cardUpdate.getJobName() + "\n";
 
             String startDate = "Job Start: " + cardUpdate.getJobStartDate() + "\n";
-            String endDate = "Job End: " + cardUpdate.getJobEndDate() + "\n";
+            String endDate = "Job End: " + cardUpdate.getJobEndDate() + "\n\n";
 
             return name + startDate + endDate;
         } else
@@ -48,12 +49,12 @@ public class Template {
     }
 
     private String advanceSettlementJobBody(NotificationStatus status) {
-        JobsMonitor advanceSettlement = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.ADVANCE_SETTLEMENT.name());
-        if (advanceSettlement != null) {
-            String name = "---- " + advanceSettlement.getJobName() + " ----\n";
+        JobsMonitor advanceSettlement = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.ADVANCE_SETTLEMENT.name(), status);
+        if (advanceSettlement != null && advanceSettlement.getNotificationStatus().equals(NotificationStatus.NEW)) {
+            String name = "|-- " + advanceSettlement.getJobName() + "\n";
 
             String startDate = "Job Start: " + advanceSettlement.getJobStartDate() + "\n";
-            String endDate = "Job End: " + advanceSettlement.getJobEndDate() + "\n";
+            String endDate = "Job End: " + advanceSettlement.getJobEndDate() + "\n\n";
 
             return name + startDate + endDate;
         } else
@@ -61,12 +62,12 @@ public class Template {
     }
 
     private String gpBatchJobBody(NotificationStatus status) {
-        JobsMonitor gpBatchJob = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.GP_BATCH.name());
-        if (gpBatchJob != null) {
-            String name = "---- " + gpBatchJob.getJobName() + " ----\n";
+        JobsMonitor gpBatchJob = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.GP_BATCH.name(), status);
+        if (gpBatchJob != null && gpBatchJob.getNotificationStatus().equals(NotificationStatus.NEW)) {
+            String name = "|-- " + gpBatchJob.getJobName() + "\n";
 
-            String startDate = "Job Start: " + gpBatchJob.getJobStartDate();
-            String endDate = "Job End: " + gpBatchJob.getJobEndDate() + "\n";
+            String startDate = "Job Start: " + gpBatchJob.getJobStartDate() + "\n";
+            String endDate = "Job End: " + gpBatchJob.getJobEndDate() + "\n\n";
 
             return name + startDate + endDate;
         } else
@@ -74,9 +75,9 @@ public class Template {
     }
 
     private String reportJobBody(NotificationStatus status) {
-        JobsMonitor report = abtJobRepository.findByNotificationStatusAndJobNameIs(status, JobName.REPORT_JOB.name());
-        if (report != null) {
-            String name = "---- " + report.getJobName() + " ----\n";
+        JobsMonitor report = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.REPORT_JOB.name(), status);
+        if (report != null && report.getNotificationStatus().equals(NotificationStatus.NEW)) {
+            String name = "|-- " + report.getJobName() + "\n";
 
             String startDate = "Job Start: " + report.getJobStartDate() + "\n";
             String endDate = "Job End: " + report.getJobEndDate();
