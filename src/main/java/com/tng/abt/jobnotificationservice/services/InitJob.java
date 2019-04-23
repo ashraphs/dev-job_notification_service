@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static com.tng.abt.jobnotificationservice.utils.Global.*;
+
 @Slf4j
 @Service
 public class InitJob {
@@ -30,7 +32,7 @@ public class InitJob {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private EpochJobRepository abtJobRepository;
+    private EpochJobRepository epochJobRepository;
 
     @Value("${dormant.job.timestamp.query}")
     private String dormantJobTimestampQuery;
@@ -82,13 +84,13 @@ public class InitJob {
         }
 
         //truncate the table
-        if (abtJobs.size() > 0) {
+        if (!abtJobs.isEmpty()) {
             jdbcTemplate.execute(truncateJobQuery);
         }
 
         //save the latest job to the temporary table
         for (EpochJob job : abtJobs) {
-            job = abtJobRepository.save(job);
+            job = epochJobRepository.save(job);
         }
 
         log.info("######### End Initialize #########");
@@ -103,8 +105,8 @@ public class InitJob {
         return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.DORMANT_EXCLUSION.name())
-                        .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
-                        .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
+                        .abtJobStartDatetime(result.getTimestamp(JOB_START_DATETIME))
+                        .abtJobEndDatetime(result.getTimestamp(JOB_END_DATETIME))
                         .build())
         );
     }
@@ -117,8 +119,8 @@ public class InitJob {
         return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.CARD_UPDATE_STATUS.name())
-                        .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
-                        .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
+                        .abtJobStartDatetime(result.getTimestamp(JOB_START_DATETIME))
+                        .abtJobEndDatetime(result.getTimestamp(JOB_END_DATETIME))
                         .build())
         );
     }
@@ -131,8 +133,8 @@ public class InitJob {
         return new ArrayList<>(
                 abtJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.ADVANCE_SETTLEMENT.name())
-                        .abtJobStartDatetime(result.getTimestamp("job_start_datetime"))
-                        .abtJobEndDatetime(result.getTimestamp("job_end_datetime"))
+                        .abtJobStartDatetime(result.getTimestamp(JOB_START_DATETIME))
+                        .abtJobEndDatetime(result.getTimestamp(JOB_END_DATETIME))
                         .build())
         );
     }
@@ -145,8 +147,8 @@ public class InitJob {
         return new ArrayList<>(
                 abtBatchJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.GP_BATCH.name())
-                        .abtJobStartDatetime(result.getTimestamp("START_TIME"))
-                        .abtJobEndDatetime(result.getTimestamp("END_TIME"))
+                        .abtJobStartDatetime(result.getTimestamp(BATCH_JOB_START))
+                        .abtJobEndDatetime(result.getTimestamp(BATCH_JOB_END))
                         .build())
         );
     }
@@ -159,8 +161,8 @@ public class InitJob {
         return new ArrayList<>(
                 abtBatchJdbcTemplate.query(query, (result, rowNum) -> EpochJob.builder()
                         .jobName(JobName.REPORT_JOB.name())
-                        .abtJobStartDatetime(result.getTimestamp("START_TIME"))
-                        .abtJobEndDatetime(result.getTimestamp("END_TIME"))
+                        .abtJobStartDatetime(result.getTimestamp(BATCH_JOB_START))
+                        .abtJobEndDatetime(result.getTimestamp(BATCH_JOB_END))
                         .build())
         );
     }

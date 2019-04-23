@@ -22,7 +22,7 @@ public class Template {
     }
 
     private String dormantJobBody(NotificationStatus status) {
-        JobsMonitor dormant = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.DORMANT_EXCLUSION.name(), status);
+        JobsMonitor dormant = abtJobRepository.findTopByJobNameIsAndNotificationStatusOrderByCreatedDateDesc(JobName.DORMANT_EXCLUSION.name(), status);
 
         if (dormant != null && dormant.getNotificationStatus().equals(NotificationStatus.NEW)) {
             String name = "|-- " + dormant.getJobName() + "\n";
@@ -36,7 +36,7 @@ public class Template {
     }
 
     private String cardUpdateJobBody(NotificationStatus status) {
-        JobsMonitor cardUpdate = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.CARD_UPDATE_STATUS.name(), status);
+        JobsMonitor cardUpdate = abtJobRepository.findTopByJobNameIsAndNotificationStatusOrderByCreatedDateDesc(JobName.CARD_UPDATE_STATUS.name(), status);
         if (cardUpdate != null && cardUpdate.getNotificationStatus().equals(NotificationStatus.NEW)) {
             String name = "|-- " + cardUpdate.getJobName() + "\n";
 
@@ -49,7 +49,7 @@ public class Template {
     }
 
     private String advanceSettlementJobBody(NotificationStatus status) {
-        JobsMonitor advanceSettlement = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.ADVANCE_SETTLEMENT.name(), status);
+        JobsMonitor advanceSettlement = abtJobRepository.findTopByJobNameIsAndNotificationStatusOrderByCreatedDateDesc(JobName.ADVANCE_SETTLEMENT.name(), status);
         if (advanceSettlement != null && advanceSettlement.getNotificationStatus().equals(NotificationStatus.NEW)) {
             String name = "|-- " + advanceSettlement.getJobName() + "\n";
 
@@ -62,7 +62,7 @@ public class Template {
     }
 
     private String gpBatchJobBody(NotificationStatus status) {
-        JobsMonitor gpBatchJob = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.GP_BATCH.name(), status);
+        JobsMonitor gpBatchJob = abtJobRepository.findTopByJobNameIsAndNotificationStatusOrderByCreatedDateDesc(JobName.GP_BATCH.name(), status);
         if (gpBatchJob != null && gpBatchJob.getNotificationStatus().equals(NotificationStatus.NEW)) {
             String name = "|-- " + gpBatchJob.getJobName() + "\n";
 
@@ -75,7 +75,7 @@ public class Template {
     }
 
     private String reportJobBody(NotificationStatus status) {
-        JobsMonitor report = abtJobRepository.findByJobNameIsAndNotificationStatus(JobName.REPORT_JOB.name(), status);
+        JobsMonitor report = abtJobRepository.findTopByJobNameIsAndNotificationStatusOrderByCreatedDateDesc(JobName.REPORT_JOB.name(), status);
         if (report != null && report.getNotificationStatus().equals(NotificationStatus.NEW)) {
             String name = "|-- " + report.getJobName() + "\n";
 

@@ -3,16 +3,18 @@ package com.tng.abt.jobnotificationservice.services;
 import com.project.dingtalk.robot.send.RobotSendServices;
 import com.tng.abt.jobnotificationservice.entities.EpochJob;
 import com.tng.abt.jobnotificationservice.entities.JobsMonitor;
+import com.tng.abt.jobnotificationservice.entities.SystemConfig;
 import com.tng.abt.jobnotificationservice.enums.NotificationStatus;
-import com.tng.abt.jobnotificationservice.repositories.EpochJobRepository;
 import com.tng.abt.jobnotificationservice.repositories.JobsMonitorRepository;
+import com.tng.abt.jobnotificationservice.repositories.SystemConfigRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.tng.abt.jobnotificationservice.utils.Global.DING_TALK_TOKEN;
 
 @Slf4j
 @Component
@@ -22,7 +24,7 @@ public class Notification {
     private JobsMonitorRepository jobsMonitorRepository;
 
     @Autowired
-    private EpochJobRepository epochJobRepository;
+    private SystemConfigRepository configRepository;
 
     @Autowired
     private RobotSendServices robotSendServices;
@@ -33,10 +35,7 @@ public class Notification {
     @Autowired
     private LatestJob latestJob;
 
-    @Value("${ding-talk.webhook.token}")
-    private String token;
-
-    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "#{@jobNotificationMonitorInterval}")
     private void jobRun() {
 
         log.info("########## START JOB ##########");
@@ -54,17 +53,26 @@ public class Notification {
         }
 
         //Send  notification
-        robotSendServices.sendTestMessage(token, template.body(NotificationStatus.NEW), null);
+        SystemConfig token = configRepository.findTopByNameIs(DING_TALK_TOKEN);
 
-        //Update Status
-        List<JobsMonitor> update = jobsMonitorRepository.findAll();
-        for (JobsMonitor job : update) {
-            job.setId(job.getId());
-            job.setJobName(job.getJobName());
-            job.setJobStartDate(job.getJobStartDate());
-            job.setJobEndDate(job.getJobEndDate());
-            job.setNotificationStatus(NotificationStatus.SENT);
-            job = jobsMonitorRepository.save(job);
+        log.info("Token: {}", token.getValue());
+        if (token != null) {
+
+            //send notification
+            robotSendServices.sendTestMessage(token.getValue(), template.body(NotificationStatus.NEW), null);
+
+            //Update Status
+            List<JobsMonitor> update = jobsMonitorRepository.findAll();
+            for (JobsMonitor job : update) {
+                job.setId(job.getId());
+                job.setJobName(job.getJobName());
+                job.setJobStartDate(job.getJobStartDate());
+                job.setJobEndDate(job.getJobEndDate());
+                job.setNotificationStatus(NotificationStatus.SENT);
+                job = jobsMonitorRepository.save(job);
+            }
+        } else {
+            log.error("Token cannot be null !!!");
         }
 
         log.info("########## END JOB ##########");

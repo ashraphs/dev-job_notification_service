@@ -53,7 +53,6 @@ public class LatestJob {
         return job;
     }
 
-
     private List<EpochJob> latestAdvanceSettlementJob() {
         EpochJob jobStart = epochJobRepository.findAllByJobName(JobName.ADVANCE_SETTLEMENT.name());
         String query = advanceSettlementJobQuery.replace("@", jobStart.getAbtJobStartDatetime().toString());

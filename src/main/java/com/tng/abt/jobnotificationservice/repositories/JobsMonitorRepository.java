@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface JobsMonitorRepository extends MasterEntityRepository<JobsMonitor> {
 
-    JobsMonitor findByJobNameIsAndNotificationStatus(String name, NotificationStatus status);
+    JobsMonitor findTopByJobNameIsAndNotificationStatusOrderByCreatedDateDesc(String name, NotificationStatus status);
 
     Optional<JobsMonitor> findById(String id);
 }
